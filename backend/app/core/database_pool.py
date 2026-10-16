@@ -1,6 +1,6 @@
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.pool import QueuePool
+from sqlalchemy.engine import make_url
 import logging
 from ..config import settings
 
@@ -16,9 +16,7 @@ class DatabasePool:
         if self.engine and self.session_factory:
             return
         try:
-            db_url = settings.database_url
-            if db_url.startswith("postgresql://"):
-                db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            db_url = make_url(settings.database_url).set(drivername="postgresql+asyncpg")
 
             self.engine = create_async_engine(
                 db_url,
