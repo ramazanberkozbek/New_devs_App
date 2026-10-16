@@ -51,7 +51,7 @@ async def calculate_monthly_revenue(
             return Decimal('0.00')
             
     except Exception as e:
-        print(f"Error calculating monthly revenue for {property_id}: {e}")
+        logger.error(f"Error calculating monthly revenue for {property_id}: {e}")
         return Decimal('0.00')
 
 async def calculate_total_revenue(property_id: str, tenant_id: str) -> Dict[str, Any]:
@@ -64,10 +64,10 @@ async def calculate_total_revenue(property_id: str, tenant_id: str) -> Dict[str,
         
         if db_pool.session_factory:
             async with db_pool.get_session() as session:
-                # Use SQLAlchemy text for raw SQL
                 from sqlalchemy import text
                 
                 query = text("""
+
                     SELECT 
                         property_id,
                         SUM(total_amount) as total_revenue,
